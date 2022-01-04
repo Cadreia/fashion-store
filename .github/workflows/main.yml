@@ -37,9 +37,11 @@ jobs:
         CI: false
 
     - name: Deploy
-      uses: SamKirkland/FTP-Deploy-Action@3.1.1
+      uses: wangyucode/sftp-upload-action@v1.1
       with:
-        server: ${{ secrets.FTP_SERVER }}
+        host: ${{ secrets.FTP_SERVER }}
         username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
-        local-dir: build/
+        port: ${{ secrets.FTP_PORT }}
+        localDir: 'build'
+        remoteDir: '/home/laddkczp/store.laddatop.com'          
