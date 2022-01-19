@@ -1,5 +1,12 @@
 import { initializeApp } from "firebase/app";
-import { writeBatch, doc, getDoc, setDoc, collection, getDocs, getFirestore } from "firebase/firestore";
+import {
+  writeBatch,
+  doc,
+  getDoc,
+  setDoc,
+  collection,
+  getFirestore,
+} from "firebase/firestore";
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 
 const config = {
@@ -28,7 +35,6 @@ export const signInWithGoogle = () => {
       // This gives you a Google Access Token. You can use it to access the Google API.
       // const credential = GoogleAuthProvider.credentialFromResult(result);
       // const token = credential.accessToken;
-
       // The signed-in user info.
       // const user = result.user;
       // ...
@@ -37,10 +43,8 @@ export const signInWithGoogle = () => {
       // Handle Errors here.
       // const errorCode = error.code;
       // const errorMessage = error.message;
-
       // The email of the user's account used.
       // const email = error.email;
-
       // The AuthCredential type that was used.
       // const credential = GoogleAuthProvider.credentialFromError(error);
       // ...
@@ -48,10 +52,10 @@ export const signInWithGoogle = () => {
 };
 
 // store specific properties from firebase user object in firestore
-const db = getFirestore();
+export const db = getFirestore();
 export const createUserProfileDocument = async (userAuth, additionalData) => {
   if (!userAuth) return;
-  
+
   const userDocRef = doc(db, "users", userAuth.uid);
   const userDocSnap = await getDoc(userDocRef);
 
@@ -79,23 +83,44 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
   return userDocRef;
 };
 
-export const createCollectionAndDocuments = async (collectionKey, objectsToAdd) => {
-  const shopCollectionRef = collection(db, collectionKey)
-  const shopCollectionSnap = await getDocs(shopCollectionRef)
-  console.log(shopCollectionRef)
-  console.log(shopCollectionSnap)
-  shopCollectionSnap.forEach((doc) => {
-    console.log(doc.id, " => ", doc.data());
-  });
+export const createCollectionAndDocuments = async (
+  collectionKey,
+  objectsToAdd
+) => {
+  const shopCollectionRef = collection(db, collectionKey);
+  // const shopCollectionSnap = await getDocs(shopCollectionRef)
+  // shopCollectionSnap.forEach((doc) => {
+  //   console.log(doc.id, " => ", doc.data());
+  // });
 
   // Make a batch request
   const batch = writeBatch(db);
-  objectsToAdd.forEach(obj => {
-    console.log(obj.title)
-    // firestore generate random id for docRef
-    const newDocRef = doc(shopCollectionRef)
-    batch.set(newDocRef, obj)
-  })
+  objectsToAdd.forEach((obj) => {
+    console.log(obj.title);
+    // let firestore generate random id for docRef
+    const newDocRef = doc(shopCollectionRef);
+    batch.set(newDocRef, obj);
+  });
 
-  return await batch.commit()
-}
+  return await batch.commit();
+};
+
+export const transformCollectionsSnapshotToMap = (collections) => {
+  const collectionsArray = []
+  collections.forEach(doc => {
+    const {title, items} = doc.data()
+    collectionsArray.push({
+      id: doc.id,
+      routeName: encodeURI(title.toLowerCase()),
+      title,
+      items
+    })
+  });
+
+  // convert collectionsArray structure to object with key:value pairs
+  // key is collection title, value is entire collection  
+  return collectionsArray.reduce((accumulator, collection) => {
+    accumulator[collection.title.toLowerCase()] = collection
+    return accumulator
+  }, {})
+};
