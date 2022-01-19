@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import StripeCheckoutButton from "../../components/stripe-button/stripe-button.component";
 
 export const CheckoutContainer = styled.div`
   width: 55%;

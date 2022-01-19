@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { doc, getDoc, setDoc, getFirestore } from "firebase/firestore";
+import { writeBatch, doc, getDoc, setDoc, collection, getDocs, getFirestore } from "firebase/firestore";
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 
 const config = {
@@ -58,8 +58,10 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
   console.log(userDocSnap);
 
   if (userDocSnap.exists()) {
+    // log data to console
     console.log("Document data:", userDocSnap.data());
   } else {
+    // create a new user document object
     console.log("User doen't exist. Will create.");
     const { displayName, email } = userAuth;
     const createdAt = new Date();
@@ -76,3 +78,24 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
   }
   return userDocRef;
 };
+
+export const createCollectionAndDocuments = async (collectionKey, objectsToAdd) => {
+  const shopCollectionRef = collection(db, collectionKey)
+  const shopCollectionSnap = await getDocs(shopCollectionRef)
+  console.log(shopCollectionRef)
+  console.log(shopCollectionSnap)
+  shopCollectionSnap.forEach((doc) => {
+    console.log(doc.id, " => ", doc.data());
+  });
+
+  // Make a batch request
+  const batch = writeBatch(db);
+  objectsToAdd.forEach(obj => {
+    console.log(obj.title)
+    // firestore generate random id for docRef
+    const newDocRef = doc(shopCollectionRef)
+    batch.set(newDocRef, obj)
+  })
+
+  return await batch.commit()
+}
