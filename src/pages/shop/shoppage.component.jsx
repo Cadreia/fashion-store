@@ -6,7 +6,10 @@ import {
   db,
   transformCollectionsSnapshotToMap,
 } from "../../firebase/firebase.utils";
-import { updateCollections, updateLoading } from "../../redux/shop/shop.actions";
+import {
+  updateCollections,
+  updateLoading,
+} from "../../redux/shop/shop.actions";
 
 class ShopPage extends Component {
   unsubscribeFromSnapshot = null;
@@ -24,6 +27,24 @@ class ShopPage extends Component {
         updateLoading(false);
       }
     );
+
+    // USE PROMISE TO GET DATA ASYNCHRONOUSLY:
+    // ONLY FETCHES ONCE, ON COMPONENT MOUNT
+    // getDocs(collectionRef).then((collections) => {
+    //   const collectionsMap = transformCollectionsSnapshotToMap(collections);
+    //   updateCollections(collectionsMap);
+    //   updateLoading(false);
+    // });
+
+    // USE FETCH TO GET DATA IF USING API
+    // fetch(
+    //   "https://firestore.googleapis.com/v1/projects/ladda-store/databases/(default)/documents/collections"
+    // )
+    //   .then((response) => response.json())
+    //   .then((collections) => {
+    //     console.log(collections);
+    //     // can make use of promise return function above to update state
+    //   });
   }
   render() {
     return (

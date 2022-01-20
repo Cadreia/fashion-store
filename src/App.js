@@ -18,33 +18,42 @@ import CollectionsOverview from "./components/collections-overview/collections-o
 import WithSpinner from "./components/with-spinner/with-spinner.component";
 import { selectLoading } from "./redux/shop/shop.selector";
 
-const CollectionsOverviewWithSpinner = WithSpinner(CollectionsOverview)
-const CollectionPageWithSpinner = WithSpinner(CollectionPage)
+const CollectionsOverviewWithSpinner = WithSpinner(CollectionsOverview);
+const CollectionPageWithSpinner = WithSpinner(CollectionPage);
 
 class App extends Component {
   unSubscribeFromAuth = null;
 
   componentDidMount() {
+    // shopCollectionsArray dispatch collections data to redux
     // const { setCurrentUser, shopCollectionsArray } = this.props;
-    const { setCurrentUser } = this.props;
-    this.unSubscribeFromAuth = onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        // User is signed in
-        const userDocRef = await createUserProfileDocument(user);
 
-        // assign current user state the value of the resulting snapshop
-        onSnapshot(userDocRef, (doc) => {
-          setCurrentUser({
-            id: doc.id,
-            ...doc.data(),
+    const { setCurrentUser } = this.props;
+    this.unSubscribeFromAuth = onAuthStateChanged(
+      auth,
+      async (user) => {
+        if (user) {
+          // User is signed in
+          const userDocRef = await createUserProfileDocument(user);
+
+          // assign current user state the value of the resulting snapshop
+          onSnapshot(userDocRef, (doc) => {
+            setCurrentUser({
+              id: doc.id,
+              ...doc.data(),
+            });
           });
-        });
-      } else {
-        // No user is signed in.
+        } else {
+          // No user is signed in.
+        }
+        setCurrentUser(user);
+        // createCollectionAndDocuments('collections', shopCollectionsArray.map(({title, items}) => ({title, items})))
+      },
+      (error) => {},
+      (complete) => {
+        // technically should never get called since auth state can always be changing indefinitely and may never complete
       }
-      setCurrentUser(user);
-      // createCollectionAndDocuments('collections', shopCollectionsArray.map(({title, items}) => ({title, items})))
-    });
+    );
   }
 
   componentWillUnmount() {
@@ -70,8 +79,21 @@ class App extends Component {
         <Routes>
           <Route exact path="/" element={<HomePage />} />
           <Route path="/shop" element={<ShopPage />}>
-            <Route index element={<CollectionsOverviewWithSpinner isLoading={this.props.isLoading} />} />
-            <Route exact path=":collectionId" element={<CollectionPageWithSpinner isLoading={this.props.isLoading} />} />
+            <Route
+              index
+              element={
+                <CollectionsOverviewWithSpinner
+                  isLoading={this.props.isLoading}
+                />
+              }
+            />
+            <Route
+              exact
+              path=":collectionId"
+              element={
+                <CollectionPageWithSpinner isLoading={this.props.isLoading} />
+              }
+            />
           </Route>
           <Route exact path="/checkout" element={<CheckoutPage />} />
           <Route
@@ -93,7 +115,7 @@ class App extends Component {
 const mapStateToProps = createStructuredSelector({
   currentUser: selectCurrentUser,
   // shopCollectionsArray: selectCollectionsForPreview
-  isLoading: selectLoading
+  isLoading: selectLoading,
 });
 
 const mapDispatchToProps = (dispatch) => ({
