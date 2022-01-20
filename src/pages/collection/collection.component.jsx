@@ -7,6 +7,8 @@ import { CollectionContainer, CollectionItemsContainer, CollectionTitleContainer
 
 const CollectionPage = () => {
   const { collectionId } = useParams();
+
+  // Optionally use this to get collection from store instead of mapStateToProps
   const collection = useSelector(selectCollection(collectionId));
   const { title, items } = collection;
   return (
