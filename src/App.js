@@ -15,6 +15,11 @@ import { selectCurrentUser } from "./redux/user/user.selector";
 import CheckoutPage from "./pages/checkout/checkout.component";
 import CollectionPage from "./pages/collection/collection.component";
 import CollectionsOverview from "./components/collections-overview/collections-overview.component";
+import WithSpinner from "./components/with-spinner/with-spinner.component";
+import { selectLoading } from "./redux/shop/shop.selector";
+
+const CollectionsOverviewWithSpinner = WithSpinner(CollectionsOverview)
+const CollectionPageWithSpinner = WithSpinner(CollectionPage)
 
 class App extends Component {
   unSubscribeFromAuth = null;
@@ -65,8 +70,8 @@ class App extends Component {
         <Routes>
           <Route exact path="/" element={<HomePage />} />
           <Route path="/shop" element={<ShopPage />}>
-            <Route index element={<CollectionsOverview />} />
-            <Route exact path=":collectionId" element={<CollectionPage />} />
+            <Route index element={<CollectionsOverviewWithSpinner isLoading={this.props.isLoading} />} />
+            <Route exact path=":collectionId" element={<CollectionPageWithSpinner isLoading={this.props.isLoading} />} />
           </Route>
           <Route exact path="/checkout" element={<CheckoutPage />} />
           <Route
@@ -88,6 +93,7 @@ class App extends Component {
 const mapStateToProps = createStructuredSelector({
   currentUser: selectCurrentUser,
   // shopCollectionsArray: selectCollectionsForPreview
+  isLoading: selectLoading
 });
 
 const mapDispatchToProps = (dispatch) => ({
