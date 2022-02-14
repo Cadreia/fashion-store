@@ -13,13 +13,9 @@ import { setCurrentUser } from "./redux/user/user.actions";
 import { createStructuredSelector } from "reselect";
 import { selectCurrentUser } from "./redux/user/user.selector";
 import CheckoutPage from "./pages/checkout/checkout.component";
-import CollectionPage from "./pages/collection/collection.component";
-import CollectionsOverview from "./components/collections-overview/collections-overview.component";
-import WithSpinner from "./components/with-spinner/with-spinner.component";
-import { selectIsCollectionFetching, selectIsCollectionLoaded } from "./redux/shop/shop.selector";
-
-const CollectionsOverviewWithSpinner = WithSpinner(CollectionsOverview);
-const CollectionPageWithSpinner = WithSpinner(CollectionPage);
+import { selectIsCollectionLoaded } from "./redux/shop/shop.selector";
+import CollectionsOverviewContainer from "./components/collections-overview/collections-overview.container";
+import CollectionPageContainer from "./pages/collection/collection.container";
 
 class App extends Component {
   unSubscribeFromAuth = null;
@@ -79,22 +75,11 @@ class App extends Component {
         <Routes>
           <Route exact path="/" element={<HomePage />} />
           <Route path="/shop" element={<ShopPage />}>
-            <Route
-              index
-              element={
-                <CollectionsOverviewWithSpinner
-                  isLoading={this.props.isCollectionFetching}
-                />
-              }
-            />
+            <Route index element={<CollectionsOverviewContainer />} />
             <Route
               exact
               path=":collectionId"
-              element={
-                <CollectionPageWithSpinner
-                  isLoading={!this.props.isCollectionsLoaded}
-                />
-              }
+              element={<CollectionPageContainer />}
             />
           </Route>
           <Route exact path="/checkout" element={<CheckoutPage />} />
@@ -116,8 +101,7 @@ class App extends Component {
 
 const mapStateToProps = createStructuredSelector({
   currentUser: selectCurrentUser,
-  isCollectionFetching: selectIsCollectionFetching,
-  isCollectionsLoaded: selectIsCollectionLoaded
+  isCollectionsLoaded: selectIsCollectionLoaded,
 });
 
 const mapDispatchToProps = (dispatch) => ({

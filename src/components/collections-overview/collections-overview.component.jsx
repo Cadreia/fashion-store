@@ -6,6 +6,7 @@ import CollectionPreview from '../collection-preview/collection-preview.componen
 import { CollectionsOverviewContainer } from "./collections-overview.styles";
 
 const CollectionsOverview = ({ collections }) => {
+  console.log(collections)
   return (
     <CollectionsOverviewContainer>
       {collections.map(({ id, ...otherCollectionProps }) => (
