@@ -1,5 +1,5 @@
 import { ShopActionTypes } from "./shop.types";
-import { call, put, takeEvery } from "redux-saga/effects";
+import { call, put, takeLatest } from "redux-saga/effects";
 import { collection, getDocs } from "firebase/firestore";
 import {
   db,
@@ -28,7 +28,7 @@ function* fetchCollectionsAsync() {
 }
 
 function* fetchCollectionsStart() {
-  yield takeEvery(
+  yield takeLatest(
     ShopActionTypes.FETCH_COLLECTIONS_START,
     fetchCollectionsAsync
   );
