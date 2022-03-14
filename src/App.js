@@ -25,31 +25,31 @@ class App extends Component {
     // const { setCurrentUser, shopCollectionsArray } = this.props;
 
     const { setCurrentUser } = this.props;
-    this.unSubscribeFromAuth = onAuthStateChanged(
-      auth,
-      async (user) => {
-        if (user) {
-          // User is signed in
-          const userDocRef = await createUserProfileDocument(user);
+    // this.unSubscribeFromAuth = onAuthStateChanged(
+    //   auth,
+    //   async (user) => {
+    //     if (user) {
+    //       // User is signed in
+    //       const userDocRef = await createUserProfileDocument(user);
 
-          // assign current user state the value of the resulting snapshop
-          onSnapshot(userDocRef, (doc) => {
-            setCurrentUser({
-              id: doc.id,
-              ...doc.data(),
-            });
-          });
-        } else {
-          // No user is signed in.
-        }
-        setCurrentUser(user);
-        // createCollectionAndDocuments('collections', shopCollectionsArray.map(({title, items}) => ({title, items})))
-      },
-      (error) => {},
-      (complete) => {
-        // technically should never get called since auth state can always be changing indefinitely and may never complete
-      }
-    );
+    //       // assign current user state the value of the resulting snapshop
+    //       onSnapshot(userDocRef, (doc) => {
+    //         setCurrentUser({
+    //           id: doc.id,
+    //           ...doc.data(),
+    //         });
+    //       });
+    //     } else {
+    //       // No user is signed in.
+    //     }
+    //     setCurrentUser(user);
+    //     // createCollectionAndDocuments('collections', shopCollectionsArray.map(({title, items}) => ({title, items})))
+    //   },
+    //   (error) => {},
+    //   (complete) => {
+    //     // technically should never get called since auth state can always be changing indefinitely and may never complete
+    //   }
+    // );
   }
 
   componentWillUnmount() {
