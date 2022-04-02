@@ -5,8 +5,6 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import ShopPage from "./pages/shop/shoppage.component";
 import Header from "./components/header/header.component";
 import Auth from "./pages/auth/auth.component";
-import { auth } from "./firebase/firebase.utils";
-import { signOut } from "firebase/auth";
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
 import { selectCurrentUser } from "./redux/user/user.selector";
@@ -28,22 +26,10 @@ class App extends Component {
     this.unSubscribeFromAuth();
   }
 
-  logUserOut = () => {
-    signOut(auth)
-      .then(() => {
-        // Sign-out successful.
-        this.setState({ currentUser: null });
-      })
-      .catch((error) => {
-        // An error happened.
-        console.log(error);
-      });
-  };
-
   render() {
     return (
       <div>
-        <Header logUserOut={this.logUserOut} />
+        <Header />
         <Routes>
           <Route exact path="/" element={<HomePage />} />
           <Route path="/shop" element={<ShopPage />}>
