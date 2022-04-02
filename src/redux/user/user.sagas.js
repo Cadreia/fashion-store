@@ -6,37 +6,26 @@ import {
   createUserProfileDocument,
   googleProvider,
 } from "../../firebase/firebase.utils";
-import {
-  emailSignInFailure,
-  emailSignInSuccess,
-  googleSignInFailure,
-  googleSignInSuccess,
-} from "./user.actions";
+import { signInFailure, signInSuccess } from "./user.actions";
 import { UserActionTypes } from "./user.types";
 
 function* signInWithGoogle() {
-  try {
-    const { user } = yield signInWithPopup(auth, googleProvider);
-    const userRef = yield call(createUserProfileDocument, user);
-    const userSnapshot = yield getDoc(userRef);
-    yield put(
-      googleSignInSuccess({ id: userSnapshot.id, ...userSnapshot.data() })
-    );
-  } catch (error) {
-    yield put(googleSignInFailure(error));
-  }
+  const { user } = yield signInWithPopup(auth, googleProvider);
+  yield getSnapshotFromUserauth(user);
 }
 
 function* signInWithEmail({ payload: { email, password } }) {
+  const { user } = yield signInWithEmailAndPassword(auth, email, password);
+  yield getSnapshotFromUserauth(user);
+}
+
+function* getSnapshotFromUserauth(authUser) {
   try {
-    const { user } = yield signInWithEmailAndPassword(auth, email, password);
-    const userRef = yield call(createUserProfileDocument, user);
+    const userRef = yield call(createUserProfileDocument, authUser);
     const userSnapshot = yield getDoc(userRef);
-    yield put(
-      emailSignInSuccess({ id: userSnapshot.id, ...userSnapshot.data() })
-    );
+    yield put(signInSuccess({ id: userSnapshot.id, ...userSnapshot.data() }));
   } catch (error) {
-    yield put(emailSignInFailure(error));
+    yield put(signInFailure(error));
   }
 }
 
