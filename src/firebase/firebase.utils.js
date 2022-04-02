@@ -85,21 +85,30 @@ export const createCollectionAndDocuments = async (
 };
 
 export const transformCollectionsSnapshotToMap = (collections) => {
-  const collectionsArray = []
-  collections.forEach(doc => {
-    const {title, items} = doc.data()
+  const collectionsArray = [];
+  collections.forEach((doc) => {
+    const { title, items } = doc.data();
     collectionsArray.push({
       id: doc.id,
       routeName: encodeURI(title.toLowerCase()),
       title,
-      items
-    })
+      items,
+    });
   });
 
   // convert collectionsArray structure to object with key:value pairs
-  // key is collection title, value is entire collection  
+  // key is collection title, value is entire collection
   return collectionsArray.reduce((accumulator, collection) => {
-    accumulator[collection.title.toLowerCase()] = collection
-    return accumulator
-  }, {})
+    accumulator[collection.title.toLowerCase()] = collection;
+    return accumulator;
+  }, {});
+};
+
+export const getCurrentUser = () => {
+  return new Promise((resolve, reject) => {
+    const unsubscribe = auth.onAuthStateChanged((userAuth) => {
+      unsubscribe();
+      resolve(userAuth);
+    }, reject);
+  });
 };

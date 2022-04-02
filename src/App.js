@@ -14,9 +14,15 @@ import CheckoutPage from "./pages/checkout/checkout.component";
 import { selectIsCollectionLoaded } from "./redux/shop/shop.selector";
 import CollectionsOverviewContainer from "./components/collections-overview/collections-overview.container";
 import CollectionPageContainer from "./pages/collection/collection.container";
+import { checkUserSession } from "./redux/user/user.actions";
 
 class App extends Component {
   unSubscribeFromAuth = null;
+
+  componentDidMount() {
+    const { checkUserSession } = this.props;
+    checkUserSession();
+  }
 
   componentWillUnmount() {
     this.unSubscribeFromAuth();
@@ -70,4 +76,8 @@ const mapStateToProps = createStructuredSelector({
   isCollectionsLoaded: selectIsCollectionLoaded,
 });
 
-export default connect(mapStateToProps, null)(App);
+const mapDispatchToProps = (dispatch) => ({
+  checkUserSession: () => dispatch(checkUserSession()),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
