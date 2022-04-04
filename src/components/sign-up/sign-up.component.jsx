@@ -24,22 +24,13 @@ class SignUp extends Component {
   handleSubmit = (event) => {
     event.preventDefault();
     const { displayName, email, password, confirmPassword } = this.state;
-    const { onUserSignUp } = this.props
+    const { onUserSignUp } = this.props;
 
     if (password !== confirmPassword) {
       alert("Passwords don't match");
       return;
     }
-
-    const userDetails = this.state
-    onUserSignUp(userDetails)
-
-    this.setState({
-      displayName: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-    });
+    onUserSignUp({ email, password, displayName });
   };
 
   render() {
@@ -90,7 +81,7 @@ class SignUp extends Component {
 }
 
 const mapDispatchToPropss = (dispatch) => ({
-  onUserSignUp: (userDetails) => dispatch(signUpStart(userDetails))
-})
+  onUserSignUp: (userDetails) => dispatch(signUpStart(userDetails)),
+});
 
 export default connect(null, mapDispatchToPropss)(SignUp);

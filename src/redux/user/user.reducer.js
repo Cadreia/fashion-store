@@ -31,13 +31,13 @@ const userReducer = (state = INITIAL_STATE, action) => {
     case UserActionTypes.SIGN_UP_SUCCESS:
       return {
         ...state,
-        error: null
-      }
+        error: null,
+      };
     case UserActionTypes.SIGN_UP_FAILURE:
       return {
         ...state,
-        error: action.payload
-      }
+        error: action.payload,
+      };
     default:
       return state;
   }
