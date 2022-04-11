@@ -6,7 +6,7 @@ name: Build and Deploy via SFTP
 # events but only for the master branch
 on:
   push:
-    branches: [ main ]
+    branches: [ payments-backend ]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -28,13 +28,16 @@ jobs:
     - name: Install dependencies
       run: npm ci
 
-    - name: Run the tests
-      run: npm test
+    # - name: Run the tests
+    #   run: npm test
 
-    - name: Build
-      run: npm run build --if-present
-      env:
-        CI: false
+    # - name: Build
+    #   run: npm run build --if-present
+    #   env:
+    #     CI: false
+
+    - name: Run Server
+      run: node server.js
 
     - name: Deploy
       uses: wangyucode/sftp-upload-action@v1.1
@@ -43,5 +46,5 @@ jobs:
         username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
         port: ${{ secrets.FTP_PORT }}
-        localDir: 'build'
+        # localDir: 'build'
         remoteDir: ${{ secrets.FTP_REMOTE_DIR }}          
