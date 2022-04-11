@@ -1,8 +1,3 @@
-import { collection, getDocs } from "firebase/firestore";
-import {
-  db,
-  transformCollectionsSnapshotToMap,
-} from "../../firebase/firebase.utils";
 import { ShopActionTypes } from "./shop.types";
 
 export const fetchCollectionsStart = () => ({
